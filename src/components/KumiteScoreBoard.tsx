@@ -152,188 +152,261 @@ const KumiteScoreBoard: React.FC = () => {
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  const CompetitorPanel: React.FC<{
-    competitor: 'aka' | 'ao';
-    state: CompetitorState;
-    label: string;
-  }> = ({ competitor, state, label }) => (
-    <Card className={`flex-1 p-6 ${competitor === 'aka' ? 'bg-gradient-aka' : 'bg-gradient-ao'} border-2`}>
-      <div className="text-center">
-        <div className="text-white text-3xl font-bold mb-2">{label}</div>
-        <div className="text-white text-6xl font-bold mb-6">Score: {state.score}</div>
-        
-        {/* Scoring buttons */}
-        <div className="grid grid-cols-4 gap-2 mb-4">
-          <Button
-            variant="score"
-            size="sm"
-            onClick={() => addScore(competitor, 'yuko')}
-          >
-            Yuko (+1)
-          </Button>
-          <Button
-            variant="score"
-            size="sm"
-            onClick={() => addScore(competitor, 'wazari')}
-          >
-            Wazari (+2)
-          </Button>
-          <Button
-            variant="score"
-            size="sm"
-            onClick={() => addScore(competitor, 'ippon')}
-          >
-            Ippon (+3)
-          </Button>
-          <Button
-            variant="cancel"
-            size="sm"
-            onClick={() => cancelLast(competitor)}
-          >
-            Cancel (-1)
-          </Button>
-        </div>
-
-        {/* Penalty buttons */}
-        <div className="grid grid-cols-5 gap-2 mb-4">
-          <Button
-            variant="penalty"
-            size="sm"
-            onClick={() => addPenalty(competitor, 'c1')}
-            className={state.c1 > 0 ? 'bg-yellow-500 text-black' : ''}
-          >
-            C1
-          </Button>
-          <Button
-            variant="penalty"
-            size="sm"
-            onClick={() => addPenalty(competitor, 'c2')}
-            className={state.c2 > 0 ? 'bg-yellow-500 text-black' : ''}
-          >
-            C2
-          </Button>
-          <Button
-            variant="penalty"
-            size="sm"
-            onClick={() => addPenalty(competitor, 'c3')}
-            className={state.c3 > 0 ? 'bg-yellow-500 text-black' : ''}
-          >
-            C3
-          </Button>
-          <Button
-            variant="penalty"
-            size="sm"
-            onClick={() => addPenalty(competitor, 'hc')}
-            className={state.hc > 0 ? 'bg-orange-500 text-white' : ''}
-          >
-            HC
-          </Button>
-          <Button
-            variant="penalty"
-            size="sm"
-            onClick={() => addPenalty(competitor, 'h')}
-            className={state.h > 0 ? 'bg-red-500 text-white' : ''}
-          >
-            H
-          </Button>
-        </div>
-
-        {/* SENSHU indicator */}
-        <Button
-          variant={state.senshu ? "senshu" : "penalty"}
-          size="lg"
-          onClick={() => toggleSenshu(competitor)}
-          className="w-full"
-        >
-          SENSHU
-        </Button>
-      </div>
-    </Card>
-  );
-
   return (
-    <div className="min-h-screen bg-gradient-main p-4">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-6">
-          <h1 className="text-4xl font-bold text-white mb-2">
-            Advanced Taekwondo Martial Arts
-          </h1>
-          
-          {/* Timer */}
-          <div className="bg-timer rounded-xl p-6 mb-6 border border-border/30">
-            <div className="text-6xl font-mono font-bold text-white mb-4">
-              {formatTime(timer.minutes, timer.seconds)}
+    <div className="min-h-screen bg-background">
+      <div className="flex h-screen">
+        {/* AKA Side - Full Red */}
+        <div className="flex-1 bg-gradient-aka flex flex-col">
+          {/* Header and Timer - AKA Side */}
+          <div className="text-center p-6">
+            <h1 className="text-2xl font-bold text-white mb-4">
+              Advanced Taekwondo Martial Arts
+            </h1>
+            <div className="bg-black/20 rounded-xl p-4 mb-4 border border-white/20">
+              <div className="text-4xl font-mono font-bold text-white">
+                {formatTime(timer.minutes, timer.seconds)}
+              </div>
+            </div>
+          </div>
+
+          {/* AKA Competitor Panel */}
+          <div className="flex-1 p-6">
+            <div className="text-center">
+              <div className="text-white text-4xl font-bold mb-4">AKA</div>
+              <div className="text-white text-8xl font-bold mb-8">Score: {akaState.score}</div>
+              
+              {/* Scoring buttons */}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <Button
+                  variant="score"
+                  size="xl"
+                  onClick={() => addScore('aka', 'yuko')}
+                >
+                  Yuko (+1)
+                </Button>
+                <Button
+                  variant="score"
+                  size="xl"
+                  onClick={() => addScore('aka', 'wazari')}
+                >
+                  Wazari (+2)
+                </Button>
+                <Button
+                  variant="score"
+                  size="xl"
+                  onClick={() => addScore('aka', 'ippon')}
+                >
+                  Ippon (+3)
+                </Button>
+                <Button
+                  variant="cancel"
+                  size="xl"
+                  onClick={() => cancelLast('aka')}
+                >
+                  Cancel (-1)
+                </Button>
+              </div>
+
+              {/* Penalty buttons */}
+              <div className="grid grid-cols-5 gap-3 mb-6">
+                <Button
+                  variant="penalty"
+                  size="lg"
+                  onClick={() => addPenalty('aka', 'c1')}
+                  className={akaState.c1 > 0 ? 'bg-yellow-500 text-black' : ''}
+                >
+                  C1
+                </Button>
+                <Button
+                  variant="penalty"
+                  size="lg"
+                  onClick={() => addPenalty('aka', 'c2')}
+                  className={akaState.c2 > 0 ? 'bg-yellow-500 text-black' : ''}
+                >
+                  C2
+                </Button>
+                <Button
+                  variant="penalty"
+                  size="lg"
+                  onClick={() => addPenalty('aka', 'c3')}
+                  className={akaState.c3 > 0 ? 'bg-yellow-500 text-black' : ''}
+                >
+                  C3
+                </Button>
+                <Button
+                  variant="penalty"
+                  size="lg"
+                  onClick={() => addPenalty('aka', 'hc')}
+                  className={akaState.hc > 0 ? 'bg-orange-500 text-white' : ''}
+                >
+                  HC
+                </Button>
+                <Button
+                  variant="penalty"
+                  size="lg"
+                  onClick={() => addPenalty('aka', 'h')}
+                  className={akaState.h > 0 ? 'bg-red-500 text-white' : ''}
+                >
+                  H
+                </Button>
+              </div>
+
+              {/* SENSHU indicator */}
+              <Button
+                variant={akaState.senshu ? "senshu" : "penalty"}
+                size="xl"
+                onClick={() => toggleSenshu('aka')}
+                className="w-full"
+              >
+                SENSHU
+              </Button>
             </div>
           </div>
         </div>
 
-        {/* Main scoring area */}
-        <div className="flex gap-6 mb-6">
-          <CompetitorPanel competitor="aka" state={akaState} label="AKA" />
-          <CompetitorPanel competitor="ao" state={aoState} label="AO" />
-        </div>
+        {/* AO Side - Full Blue */}
+        <div className="flex-1 bg-gradient-ao flex flex-col">
+          {/* Control buttons - AO Side */}
+          <div className="p-6">
+            <div className="flex justify-center gap-3 mb-4">
+              {showSettings ? (
+                <Card className="p-4 bg-black/20 border border-white/20">
+                  <div className="flex items-center gap-4">
+                    <Label className="text-white">Match Time (minutes):</Label>
+                    <Input
+                      type="number"
+                      step="0.5"
+                      value={matchTimeInput}
+                      onChange={(e) => setMatchTimeInput(e.target.value)}
+                      className="w-20"
+                    />
+                    <Button variant="control" onClick={setMatchTime}>
+                      Set Time
+                    </Button>
+                    <Button variant="control" onClick={() => setShowSettings(false)}>
+                      Cancel
+                    </Button>
+                  </div>
+                </Card>
+              ) : (
+                <>
+                  <Button variant="control" onClick={() => setShowSettings(true)}>
+                    <Settings className="w-4 h-4" />
+                  </Button>
+                  <Button variant="control" onClick={resetTimer}>
+                    <RotateCcw className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="control"
+                    onClick={timer.isRunning ? stopTimer : startTimer}
+                  >
+                    {timer.isRunning ? (
+                      <Pause className="w-4 h-4" />
+                    ) : (
+                      <Play className="w-4 h-4" />
+                    )}
+                  </Button>
+                  <Button variant="destructive" onClick={resetBoard}>
+                    Reset
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
 
-        {/* Control buttons */}
-        <div className="flex justify-center gap-4 mb-4">
-          {showSettings ? (
-            <Card className="p-4 bg-control border border-border/30">
-              <div className="flex items-center gap-4">
-                <Label className="text-white">Match Time (minutes):</Label>
-                <Input
-                  type="number"
-                  step="0.5"
-                  value={matchTimeInput}
-                  onChange={(e) => setMatchTimeInput(e.target.value)}
-                  className="w-20"
-                />
-                <Button variant="control" onClick={setMatchTime}>
-                  Set Time
+          {/* AO Competitor Panel */}
+          <div className="flex-1 p-6">
+            <div className="text-center">
+              <div className="text-white text-4xl font-bold mb-4">AO</div>
+              <div className="text-white text-8xl font-bold mb-8">Score: {aoState.score}</div>
+              
+              {/* Scoring buttons */}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <Button
+                  variant="score"
+                  size="xl"
+                  onClick={() => addScore('ao', 'yuko')}
+                >
+                  Yuko (+1)
                 </Button>
-                <Button variant="control" onClick={() => setShowSettings(false)}>
-                  Cancel
+                <Button
+                  variant="score"
+                  size="xl"
+                  onClick={() => addScore('ao', 'wazari')}
+                >
+                  Wazari (+2)
+                </Button>
+                <Button
+                  variant="score"
+                  size="xl"
+                  onClick={() => addScore('ao', 'ippon')}
+                >
+                  Ippon (+3)
+                </Button>
+                <Button
+                  variant="cancel"
+                  size="xl"
+                  onClick={() => cancelLast('ao')}
+                >
+                  Cancel (-1)
                 </Button>
               </div>
-            </Card>
-          ) : (
-            <>
-              <Button variant="control" size="lg" onClick={() => setShowSettings(true)}>
-                <Settings className="w-5 h-5 mr-2" />
-                Set Match Time
-              </Button>
-              <Button variant="control" size="lg" onClick={resetTimer}>
-                <RotateCcw className="w-5 h-5 mr-2" />
-                Set Time
-              </Button>
-              <Button
-                variant="control"
-                size="lg"
-                onClick={timer.isRunning ? stopTimer : startTimer}
-              >
-                {timer.isRunning ? (
-                  <>
-                    <Pause className="w-5 h-5 mr-2" />
-                    Stop
-                  </>
-                ) : (
-                  <>
-                    <Play className="w-5 h-5 mr-2" />
-                    Start
-                  </>
-                )}
-              </Button>
-              <Button variant="control" size="lg" onClick={resetTimer}>
-                Reset
-              </Button>
-            </>
-          )}
-        </div>
 
-        {/* Reset board button */}
-        <div className="text-center">
-          <Button variant="destructive" size="lg" onClick={resetBoard}>
-            Reset Board
-          </Button>
+              {/* Penalty buttons */}
+              <div className="grid grid-cols-5 gap-3 mb-6">
+                <Button
+                  variant="penalty"
+                  size="lg"
+                  onClick={() => addPenalty('ao', 'c1')}
+                  className={aoState.c1 > 0 ? 'bg-yellow-500 text-black' : ''}
+                >
+                  C1
+                </Button>
+                <Button
+                  variant="penalty"
+                  size="lg"
+                  onClick={() => addPenalty('ao', 'c2')}
+                  className={aoState.c2 > 0 ? 'bg-yellow-500 text-black' : ''}
+                >
+                  C2
+                </Button>
+                <Button
+                  variant="penalty"
+                  size="lg"
+                  onClick={() => addPenalty('ao', 'c3')}
+                  className={aoState.c3 > 0 ? 'bg-yellow-500 text-black' : ''}
+                >
+                  C3
+                </Button>
+                <Button
+                  variant="penalty"
+                  size="lg"
+                  onClick={() => addPenalty('ao', 'hc')}
+                  className={aoState.hc > 0 ? 'bg-orange-500 text-white' : ''}
+                >
+                  HC
+                </Button>
+                <Button
+                  variant="penalty"
+                  size="lg"
+                  onClick={() => addPenalty('ao', 'h')}
+                  className={aoState.h > 0 ? 'bg-red-500 text-white' : ''}
+                >
+                  H
+                </Button>
+              </div>
+
+              {/* SENSHU indicator */}
+              <Button
+                variant={aoState.senshu ? "senshu" : "penalty"}
+                size="xl"
+                onClick={() => toggleSenshu('ao')}
+                className="w-full"
+              >
+                SENSHU
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
