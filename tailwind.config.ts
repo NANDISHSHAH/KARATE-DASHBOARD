@@ -61,7 +61,28 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				aka: {
+					DEFAULT: 'hsl(var(--aka-primary))',
+					secondary: 'hsl(var(--aka-secondary))',
+					dark: 'hsl(var(--aka-dark))'
+				},
+				ao: {
+					DEFAULT: 'hsl(var(--ao-primary))',
+					secondary: 'hsl(var(--ao-secondary))',
+					dark: 'hsl(var(--ao-dark))'
+				},
+				timer: 'hsl(var(--timer-bg))',
+				control: 'hsl(var(--control-bg))'
+			},
+			backgroundImage: {
+				'gradient-main': 'var(--gradient-main)',
+				'gradient-aka': 'var(--gradient-aka)',
+				'gradient-ao': 'var(--gradient-ao)'
+			},
+			transitionTimingFunction: {
+				'smooth': 'var(--transition-smooth)',
+				'bounce': 'var(--transition-bounce)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

@@ -18,11 +18,22 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        // Kumite specific variants
+        aka: "bg-gradient-aka text-white hover:bg-aka-dark font-bold shadow-lg border-2 border-aka-dark/30",
+        ao: "bg-gradient-ao text-white hover:bg-ao-dark font-bold shadow-lg border-2 border-ao-dark/30",
+        score: "bg-gradient-main text-white hover:bg-secondary font-bold shadow-lg border border-border/50",
+        control: "bg-control text-foreground hover:bg-control/80 border border-border/30 font-medium",
+        timer: "bg-timer text-foreground hover:bg-timer/80 border border-border/30",
+        penalty: "bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border/30 font-medium",
+        cancel: "bg-destructive/20 text-destructive hover:bg-destructive/30 border border-destructive/30 font-medium",
+        senshu: "bg-yellow-600 text-white hover:bg-yellow-700 font-bold shadow-lg border-2 border-yellow-500/50"
       },
       size: {
         default: "h-10 px-4 py-2",
         sm: "h-9 rounded-md px-3",
         lg: "h-11 rounded-md px-8",
+        xl: "h-14 rounded-lg px-10 text-lg",
+        score: "h-16 rounded-lg px-6 text-xl font-bold",
         icon: "h-10 w-10",
       },
     },
