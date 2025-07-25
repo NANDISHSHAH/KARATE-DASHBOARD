@@ -154,21 +154,23 @@ const KumiteScoreBoard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="flex h-screen">
-        {/* AKA Side - Full Red */}
-        <div className="flex-1 bg-gradient-aka flex flex-col">
-          {/* Header and Timer - AKA Side */}
-          <div className="text-center p-6">
-            <h1 className="text-2xl font-bold text-white mb-4">
-              Advanced Taekwondo Martial Arts
-            </h1>
-            <div className="bg-black/20 rounded-xl p-4 mb-4 border border-white/20">
-              <div className="text-4xl font-mono font-bold text-white">
-                {formatTime(timer.minutes, timer.seconds)}
-              </div>
+      {/* Centered Timer */}
+      <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-10">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-white mb-4">
+            Advanced Taekwondo Martial Arts
+          </h1>
+          <div className="bg-black/30 rounded-xl p-4 border border-white/20">
+            <div className="text-6xl font-mono font-bold text-white">
+              {formatTime(timer.minutes, timer.seconds)}
             </div>
           </div>
+        </div>
+      </div>
 
+      <div className="flex h-screen">
+        {/* AKA Side - Full Red */}
+        <div className="flex-1 bg-gradient-aka flex flex-col pt-32">
           {/* AKA Competitor Panel */}
           <div className="flex-1 p-6">
             <div className="text-center">
@@ -265,7 +267,7 @@ const KumiteScoreBoard: React.FC = () => {
         </div>
 
         {/* AO Side - Full Blue */}
-        <div className="flex-1 bg-gradient-ao flex flex-col">
+        <div className="flex-1 bg-gradient-ao flex flex-col pt-32">
           {/* Control buttons - AO Side */}
           <div className="p-6">
             <div className="flex justify-center gap-3 mb-4">
