@@ -121,6 +121,15 @@ const KumiteScoreBoard: React.FC = () => {
     }));
   }, []);
 
+  // Toggle penalty function
+  const togglePenalty = useCallback((competitor: 'aka' | 'ao', type: 'c1' | 'c2' | 'c3' | 'hc' | 'h') => {
+    const setState = competitor === 'aka' ? setAkaState : setAoState;
+    setState(prev => ({
+      ...prev,
+      [type]: prev[type] > 0 ? 0 : 1
+    }));
+  }, []);
+
   // Timer controls
   const startTimer = () => setTimer(prev => ({ ...prev, isRunning: true }));
   const stopTimer = () => setTimer(prev => ({ ...prev, isRunning: false }));
@@ -152,13 +161,17 @@ const KumiteScoreBoard: React.FC = () => {
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
+  // Determine lead
+  const akaLead = akaState.score - aoState.score >= 6;
+  const aoLead = aoState.score - akaState.score >= 6;
+
   return (
     <div className="min-h-screen bg-background">
       {/* Centered Timer */}
       <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-10">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-white mb-4">
-            Advanced Taekwondo Martial Arts
+            Advanced Taefudo Martial Arts
           </h1>
           <div className="bg-black/30 rounded-xl p-4 border border-white/20">
             <div className="text-6xl font-mono font-bold text-white">
@@ -169,13 +182,64 @@ const KumiteScoreBoard: React.FC = () => {
       </div>
 
       <div className="flex h-screen">
+        {/* Centered Control Buttons */}
+        <div className="absolute left-1/2 top-40 transform -translate-x-1/2 z-20">
+          <div className="flex justify-center gap-3">
+            {showSettings ? (
+              <Card className="p-4 bg-black/20 border border-white/20">
+                <div className="flex items-center gap-4">
+                  <Label className="text-white">Match Time (minutes):</Label>
+                  <Input
+                    type="number"
+                    step="0.5"
+                    value={matchTimeInput}
+                    onChange={(e) => setMatchTimeInput(e.target.value)}
+                    className="w-20"
+                  />
+                  <Button variant="control" onClick={setMatchTime}>
+                    Set Time
+                  </Button>
+                  <Button variant="control" onClick={() => setShowSettings(false)}>
+                    Cancel
+                  </Button>
+                </div>
+              </Card>
+            ) : (
+              <>
+                <Button variant="control" onClick={() => setShowSettings(true)}>
+                  <Settings className="w-4 h-4" />
+                </Button>
+                <Button variant="control" onClick={resetTimer}>
+                  <RotateCcw className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="control"
+                  onClick={timer.isRunning ? stopTimer : startTimer}
+                >
+                  {timer.isRunning ? (
+                    <Pause className="w-4 h-4" />
+                  ) : (
+                    <Play className="w-4 h-4" />
+                  )}
+                </Button>
+                <Button variant="destructive" onClick={resetBoard}>
+                  Reset
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
+
         {/* AKA Side - Full Red */}
         <div className="flex-1 bg-gradient-aka flex flex-col pt-32">
           {/* AKA Competitor Panel */}
           <div className="flex-1 p-6">
             <div className="text-center">
               <div className="text-white text-4xl font-bold mb-4">AKA</div>
-              <div className="text-white text-8xl font-bold mb-8">Score: {akaState.score}</div>
+              <div className="text-white text-8xl font-bold mb-8 flex items-center justify-center">
+                <span className={akaLead ? "animate-flicker" : ""}>Score: {akaState.score}</span>
+                {akaLead && <span className="ml-4 text-yellow-300 text-6xl">🏆</span>}
+              </div>
               
               {/* Scoring buttons */}
               <div className="grid grid-cols-2 gap-4 mb-6">
@@ -204,6 +268,7 @@ const KumiteScoreBoard: React.FC = () => {
                   variant="cancel"
                   size="xl"
                   onClick={() => cancelLast('aka')}
+                  className="text-white"
                 >
                   Cancel (-1)
                 </Button>
@@ -214,7 +279,7 @@ const KumiteScoreBoard: React.FC = () => {
                 <Button
                   variant="penalty"
                   size="lg"
-                  onClick={() => addPenalty('aka', 'c1')}
+                  onClick={() => togglePenalty('aka', 'c1')}
                   className={akaState.c1 > 0 ? 'bg-yellow-500 text-black' : ''}
                 >
                   C1
@@ -222,7 +287,7 @@ const KumiteScoreBoard: React.FC = () => {
                 <Button
                   variant="penalty"
                   size="lg"
-                  onClick={() => addPenalty('aka', 'c2')}
+                  onClick={() => togglePenalty('aka', 'c2')}
                   className={akaState.c2 > 0 ? 'bg-yellow-500 text-black' : ''}
                 >
                   C2
@@ -230,7 +295,7 @@ const KumiteScoreBoard: React.FC = () => {
                 <Button
                   variant="penalty"
                   size="lg"
-                  onClick={() => addPenalty('aka', 'c3')}
+                  onClick={() => togglePenalty('aka', 'c3')}
                   className={akaState.c3 > 0 ? 'bg-yellow-500 text-black' : ''}
                 >
                   C3
@@ -238,7 +303,7 @@ const KumiteScoreBoard: React.FC = () => {
                 <Button
                   variant="penalty"
                   size="lg"
-                  onClick={() => addPenalty('aka', 'hc')}
+                  onClick={() => togglePenalty('aka', 'hc')}
                   className={akaState.hc > 0 ? 'bg-orange-500 text-white' : ''}
                 >
                   HC
@@ -246,7 +311,7 @@ const KumiteScoreBoard: React.FC = () => {
                 <Button
                   variant="penalty"
                   size="lg"
-                  onClick={() => addPenalty('aka', 'h')}
+                  onClick={() => togglePenalty('aka', 'h')}
                   className={akaState.h > 0 ? 'bg-red-500 text-white' : ''}
                 >
                   H
@@ -268,59 +333,14 @@ const KumiteScoreBoard: React.FC = () => {
 
         {/* AO Side - Full Blue */}
         <div className="flex-1 bg-gradient-ao flex flex-col pt-32">
-          {/* Control buttons - AO Side */}
-          <div className="p-6">
-            <div className="flex justify-center gap-3 mb-4">
-              {showSettings ? (
-                <Card className="p-4 bg-black/20 border border-white/20">
-                  <div className="flex items-center gap-4">
-                    <Label className="text-white">Match Time (minutes):</Label>
-                    <Input
-                      type="number"
-                      step="0.5"
-                      value={matchTimeInput}
-                      onChange={(e) => setMatchTimeInput(e.target.value)}
-                      className="w-20"
-                    />
-                    <Button variant="control" onClick={setMatchTime}>
-                      Set Time
-                    </Button>
-                    <Button variant="control" onClick={() => setShowSettings(false)}>
-                      Cancel
-                    </Button>
-                  </div>
-                </Card>
-              ) : (
-                <>
-                  <Button variant="control" onClick={() => setShowSettings(true)}>
-                    <Settings className="w-4 h-4" />
-                  </Button>
-                  <Button variant="control" onClick={resetTimer}>
-                    <RotateCcw className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="control"
-                    onClick={timer.isRunning ? stopTimer : startTimer}
-                  >
-                    {timer.isRunning ? (
-                      <Pause className="w-4 h-4" />
-                    ) : (
-                      <Play className="w-4 h-4" />
-                    )}
-                  </Button>
-                  <Button variant="destructive" onClick={resetBoard}>
-                    Reset
-                  </Button>
-                </>
-              )}
-            </div>
-          </div>
-
           {/* AO Competitor Panel */}
           <div className="flex-1 p-6">
             <div className="text-center">
               <div className="text-white text-4xl font-bold mb-4">AO</div>
-              <div className="text-white text-8xl font-bold mb-8">Score: {aoState.score}</div>
+              <div className="text-white text-8xl font-bold mb-8 flex items-center justify-center">
+                <span className={aoLead ? "animate-flicker" : ""}>Score: {aoState.score}</span>
+                {aoLead && <span className="ml-4 text-yellow-300 text-6xl">🏆</span>}
+              </div>
               
               {/* Scoring buttons */}
               <div className="grid grid-cols-2 gap-4 mb-6">
@@ -349,6 +369,7 @@ const KumiteScoreBoard: React.FC = () => {
                   variant="cancel"
                   size="xl"
                   onClick={() => cancelLast('ao')}
+                  className="text-white"
                 >
                   Cancel (-1)
                 </Button>
@@ -359,7 +380,7 @@ const KumiteScoreBoard: React.FC = () => {
                 <Button
                   variant="penalty"
                   size="lg"
-                  onClick={() => addPenalty('ao', 'c1')}
+                  onClick={() => togglePenalty('ao', 'c1')}
                   className={aoState.c1 > 0 ? 'bg-yellow-500 text-black' : ''}
                 >
                   C1
@@ -367,7 +388,7 @@ const KumiteScoreBoard: React.FC = () => {
                 <Button
                   variant="penalty"
                   size="lg"
-                  onClick={() => addPenalty('ao', 'c2')}
+                  onClick={() => togglePenalty('ao', 'c2')}
                   className={aoState.c2 > 0 ? 'bg-yellow-500 text-black' : ''}
                 >
                   C2
@@ -375,7 +396,7 @@ const KumiteScoreBoard: React.FC = () => {
                 <Button
                   variant="penalty"
                   size="lg"
-                  onClick={() => addPenalty('ao', 'c3')}
+                  onClick={() => togglePenalty('ao', 'c3')}
                   className={aoState.c3 > 0 ? 'bg-yellow-500 text-black' : ''}
                 >
                   C3
@@ -383,7 +404,7 @@ const KumiteScoreBoard: React.FC = () => {
                 <Button
                   variant="penalty"
                   size="lg"
-                  onClick={() => addPenalty('ao', 'hc')}
+                  onClick={() => togglePenalty('ao', 'hc')}
                   className={aoState.hc > 0 ? 'bg-orange-500 text-white' : ''}
                 >
                   HC
@@ -391,7 +412,7 @@ const KumiteScoreBoard: React.FC = () => {
                 <Button
                   variant="penalty"
                   size="lg"
-                  onClick={() => addPenalty('ao', 'h')}
+                  onClick={() => togglePenalty('ao', 'h')}
                   className={aoState.h > 0 ? 'bg-red-500 text-white' : ''}
                 >
                   H
@@ -411,6 +432,18 @@ const KumiteScoreBoard: React.FC = () => {
           </div>
         </div>
       </div>
+      {/* Add flicker animation CSS */}
+      <style>
+        {`
+          @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+          }
+          .animate-flicker {
+            animation: flicker 0.7s linear infinite;
+          }
+        `}
+      </style>
     </div>
   );
 };
