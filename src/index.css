@@ -122,3 +122,186 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Broadcast victory takeover — 5s, then fade */
+@keyframes vt-hold {
+  0% { opacity: 0; }
+  3% { opacity: 1; }
+  94% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes vt-wipe {
+  0% { transform: scaleX(0); }
+  16% { transform: scaleX(1); }
+  100% { transform: scaleX(1); }
+}
+
+@keyframes vt-fighter {
+  0% { transform: translateX(-18%) scale(0.96); opacity: 0; }
+  6% { transform: translateX(0) scale(1); opacity: 1; }
+  94% { transform: translateX(0) scale(1); opacity: 1; }
+  100% { transform: translateX(4%) scale(1.01); opacity: 0; }
+}
+
+@keyframes vt-fighter-ao {
+  0% { transform: translateX(18%) scale(0.96); opacity: 0; }
+  6% { transform: translateX(0) scale(1); opacity: 1; }
+  94% { transform: translateX(0) scale(1); opacity: 1; }
+  100% { transform: translateX(-4%) scale(1.01); opacity: 0; }
+}
+
+/* 5s takeover: stance, chamber, snap, hold the high kick */
+@keyframes vt-thigh {
+  0%, 6% { transform: rotate(0deg); }
+  16% { transform: rotate(-70deg); }
+  26% { transform: rotate(-158deg); }
+  30%, 100% { transform: rotate(-148deg); }
+}
+
+@keyframes vt-shin {
+  0%, 6% { transform: rotate(0deg); }
+  16% { transform: rotate(105deg); }
+  26% { transform: rotate(-4deg); }
+  30%, 100% { transform: rotate(0deg); }
+}
+
+@keyframes vt-torso {
+  0%, 6% { transform: rotate(0deg); }
+  16% { transform: rotate(10deg); }
+  26%, 100% { transform: rotate(14deg); }
+}
+
+@keyframes vt-plant {
+  0%, 8% { transform: rotate(0deg); }
+  18% { transform: rotate(6deg); }
+  28%, 100% { transform: rotate(-3deg); }
+}
+
+@keyframes vt-impact {
+  0%, 24% { opacity: 0; transform: scale(0.4); }
+  30% { opacity: 1; transform: scale(1.15); }
+  42%, 100% { opacity: 0; transform: scale(1.6); }
+}
+
+@keyframes vt-shock {
+  0%, 24% { transform: scale(0.15); opacity: 0; }
+  32% { opacity: 0.95; }
+  58% { transform: scale(2.6); opacity: 0; }
+  100% { opacity: 0; }
+}
+
+@keyframes vt-flash {
+  0%, 24% { opacity: 0; }
+  27% { opacity: 0.35; }
+  34%, 100% { opacity: 0; }
+}
+
+@keyframes vt-shake {
+  0%, 26% { transform: translate3d(0, 0, 0); }
+  29% { transform: translate3d(10px, -6px, 0); }
+  32% { transform: translate3d(-8px, 4px, 0); }
+  35% { transform: translate3d(5px, 2px, 0); }
+  40%, 100% { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes vt-title {
+  0%, 16% { transform: translateY(48px) skewX(-12deg) scale(0.7); opacity: 0; }
+  30% { transform: translateY(0) skewX(-8deg) scale(1.06); opacity: 1; }
+  38%, 94% { transform: translateY(0) skewX(-8deg) scale(1); opacity: 1; }
+  100% { opacity: 0; transform: translateY(-12px) skewX(-8deg); }
+}
+
+@keyframes vt-sub {
+  0%, 24% { transform: translateX(-24px); opacity: 0; }
+  38%, 94% { transform: translateX(0); opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes vt-splat {
+  0%, 10% { transform: scale(0.2) rotate(0deg); opacity: 0; }
+  28% { transform: scale(1.08) rotate(8deg); opacity: 0.9; }
+  86% { transform: scale(1) rotate(12deg); opacity: 0.75; }
+  100% { opacity: 0; }
+}
+
+@keyframes vt-streak {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(220%); }
+}
+
+@keyframes vt-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.animate-flicker {
+  animation: vt-flicker 0.7s linear infinite;
+}
+
+.victory-overlay {
+  animation: vt-hold 5s linear forwards;
+}
+
+.victory-overlay[data-side="aka"] {
+  --v: #ff2d2d;
+  --v-deep: #2a0006;
+  --v-ink: #1a0505;
+}
+
+.victory-overlay[data-side="ao"] {
+  --v: #3b82f6;
+  --v-deep: #031028;
+  --v-ink: #050814;
+}
+
+.victory-stage {
+  animation: vt-shake 5s linear forwards;
+}
+
+.victory-slash {
+  transform-origin: left center;
+  animation: vt-wipe 5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.victory-overlay[data-side="ao"] .victory-slash {
+  transform-origin: right center;
+}
+
+.victory-fighter-aka {
+  animation: vt-fighter 5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.victory-fighter-ao {
+  animation: vt-fighter-ao 5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.vt-impact {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: vt-impact 5s ease-out forwards;
+}
+
+.victory-shock {
+  animation: vt-shock 5s ease-out forwards;
+}
+
+.victory-flash {
+  animation: vt-flash 5s linear forwards;
+}
+
+.victory-title {
+  animation: vt-title 5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.victory-sub {
+  animation: vt-sub 5s ease forwards;
+}
+
+.victory-splat {
+  animation: vt-splat 5s ease forwards;
+}
+
+.victory-streak {
+  animation: vt-streak 0.7s linear infinite;
+}

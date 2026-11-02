@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Play, Pause, RotateCcw, Settings } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import VictoryTakeover from '@/components/VictoryTakeover';
 
 interface CompetitorState {
   score: number;
@@ -61,6 +62,8 @@ const KumiteScoreBoard: React.FC = () => {
 
   const [showSettings, setShowSettings] = useState(false);
   const [matchTimeInput, setMatchTimeInput] = useState("1.5");
+  const [victorySide, setVictorySide] = useState<'aka' | 'ao' | null>(null);
+  const leadRef = useRef<'aka' | 'ao' | null>(null);
 
   // Timer logic
   useEffect(() => {
@@ -155,18 +158,37 @@ const KumiteScoreBoard: React.FC = () => {
       score: 0, yuko: 0, wazari: 0, ippon: 0, c1: 0, c2: 0, c3: 0, hc: 0, h: 0, senshu: false
     });
     resetTimer();
+    setVictorySide(null);
+    leadRef.current = null;
   };
 
   const formatTime = (minutes: number, seconds: number) => {
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  // Determine lead
   const akaLead = akaState.score - aoState.score >= 6;
   const aoLead = aoState.score - akaState.score >= 6;
+  const leader: 'aka' | 'ao' | null = akaLead ? 'aka' : aoLead ? 'ao' : null;
+
+  useEffect(() => {
+    if (leader && leader !== leadRef.current) {
+      setVictorySide(leader);
+    }
+    leadRef.current = leader;
+  }, [leader]);
+
+  const dismissVictory = useCallback(() => setVictorySide(null), []);
 
   return (
     <div className="min-h-screen bg-background">
+      {victorySide && (
+        <VictoryTakeover
+          side={victorySide}
+          akaScore={akaState.score}
+          aoScore={aoState.score}
+          onDone={dismissVictory}
+        />
+      )}
       {/* Centered Timer */}
       <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-10">
         <div className="text-center">
@@ -268,7 +290,6 @@ const KumiteScoreBoard: React.FC = () => {
                   variant="cancel"
                   size="xl"
                   onClick={() => cancelLast('aka')}
-                  className="text-white"
                 >
                   Cancel (-1)
                 </Button>
@@ -369,7 +390,6 @@ const KumiteScoreBoard: React.FC = () => {
                   variant="cancel"
                   size="xl"
                   onClick={() => cancelLast('ao')}
-                  className="text-white"
                 >
                   Cancel (-1)
                 </Button>
@@ -432,18 +452,6 @@ const KumiteScoreBoard: React.FC = () => {
           </div>
         </div>
       </div>
-      {/* Add flicker animation CSS */}
-      <style>
-        {`
-          @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-          }
-          .animate-flicker {
-            animation: flicker 0.7s linear infinite;
-          }
-        `}
-      </style>
     </div>
   );
 };

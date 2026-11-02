@@ -25,7 +25,7 @@ const buttonVariants = cva(
         control: "bg-control text-foreground hover:bg-control/80 border border-border/30 font-medium",
         timer: "bg-timer text-foreground hover:bg-timer/80 border border-border/30",
         penalty: "bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border/30 font-medium",
-        cancel: "bg-destructive/20 text-destructive hover:bg-destructive/30 border border-destructive/30 font-medium",
+        cancel: "bg-white text-black hover:bg-neutral-200 border-2 border-white font-bold shadow-lg",
         senshu: "bg-yellow-600 text-white hover:bg-yellow-700 font-bold shadow-lg border-2 border-yellow-500/50"
       },
       size: {
@@ -55,7 +55,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : "button"
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(buttonVariants({ variant, size }), className)}
         ref={ref}
         {...props}
       />
