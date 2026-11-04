@@ -9,6 +9,7 @@ interface VictoryTakeoverProps {
   side: Side;
   akaScore: number;
   aoScore: number;
+  bySenshu?: boolean;
   onDone: () => void;
 }
 
@@ -27,7 +28,7 @@ function frameAt(elapsed: number) {
   return winHolds.length - 1;
 }
 
-const VictoryTakeover = ({ side, akaScore, aoScore, onDone }: VictoryTakeoverProps) => {
+const VictoryTakeover = ({ side, akaScore, aoScore, bySenshu = false, onDone }: VictoryTakeoverProps) => {
   const [index, setIndex] = useState(0);
   const [top, setTop] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
@@ -169,7 +170,7 @@ const VictoryTakeover = ({ side, akaScore, aoScore, onDone }: VictoryTakeoverPro
             </div>
           </div>
           <div className="mt-6 text-lg font-semibold tracking-[0.28em] text-white/85">
-            {lead} POINT LEAD
+            {bySenshu ? "SENSHU" : `${lead} POINT LEAD`}
           </div>
         </div>
       </div>

@@ -62,6 +62,8 @@ const KumiteScoreBoard: React.FC = () => {
 
   const [showSettings, setShowSettings] = useState(false);
   const [matchTimeInput, setMatchTimeInput] = useState("1.5");
+  const [leadPoints, setLeadPoints] = useState(6);
+  const [leadPointsInput, setLeadPointsInput] = useState("6");
   const [victorySide, setVictorySide] = useState<'aka' | 'ao' | null>(null);
   const leadRef = useRef<'aka' | 'ao' | null>(null);
 
@@ -72,12 +74,15 @@ const KumiteScoreBoard: React.FC = () => {
       interval = setInterval(() => {
         setTimer(prev => {
           if (prev.seconds > 0) {
-            return { ...prev, seconds: prev.seconds - 1 };
+            const seconds = prev.seconds - 1;
+            if (seconds === 0 && prev.minutes === 0) {
+              return { ...prev, seconds: 0, isRunning: false };
+            }
+            return { ...prev, seconds };
           } else if (prev.minutes > 0) {
             return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
-          } else {
-            return { ...prev, isRunning: false };
           }
+          return { ...prev, isRunning: false };
         });
       }, 1000);
     }
@@ -117,10 +122,13 @@ const KumiteScoreBoard: React.FC = () => {
   }, []);
 
   const toggleSenshu = useCallback((competitor: 'aka' | 'ao') => {
-    const setState = competitor === 'aka' ? setAkaState : setAoState;
-    setState(prev => ({
+    setAkaState(prev => ({
       ...prev,
-      senshu: !prev.senshu
+      senshu: competitor === 'aka' ? !prev.senshu : false
+    }));
+    setAoState(prev => ({
+      ...prev,
+      senshu: competitor === 'ao' ? !prev.senshu : false
     }));
   }, []);
 
@@ -142,11 +150,24 @@ const KumiteScoreBoard: React.FC = () => {
     setTimer(prev => ({ ...prev, minutes, seconds, isRunning: false }));
   };
 
-  const setMatchTime = () => {
+  const applySettings = () => {
     const duration = Math.round(parseFloat(matchTimeInput) * 60);
-    const minutes = Math.floor(duration / 60);
-    const seconds = duration % 60;
-    setTimer({ minutes, seconds, isRunning: false, matchDuration: duration });
+    if (Number.isFinite(duration) && duration > 0) {
+      const minutes = Math.floor(duration / 60);
+      const seconds = duration % 60;
+      setTimer({ minutes, seconds, isRunning: false, matchDuration: duration });
+    }
+
+    const points = parseInt(leadPointsInput, 10);
+    if (Number.isFinite(points) && points > 0) {
+      setLeadPoints(points);
+    }
+    setShowSettings(false);
+  };
+
+  const closeSettings = () => {
+    setMatchTimeInput(String(timer.matchDuration / 60));
+    setLeadPointsInput(String(leadPoints));
     setShowSettings(false);
   };
 
@@ -166,8 +187,15 @@ const KumiteScoreBoard: React.FC = () => {
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  const akaLead = akaState.score - aoState.score >= 6;
-  const aoLead = aoState.score - akaState.score >= 6;
+  const timeUp = !timer.isRunning && timer.minutes === 0 && timer.seconds === 0;
+  const scoresTied = akaState.score === aoState.score;
+  const senshuWinner: 'aka' | 'ao' | null =
+    timeUp && scoresTied && akaState.senshu !== aoState.senshu
+      ? akaState.senshu ? 'aka' : 'ao'
+      : null;
+
+  const akaLead = akaState.score - aoState.score >= leadPoints || senshuWinner === 'aka';
+  const aoLead = aoState.score - akaState.score >= leadPoints || senshuWinner === 'ao';
   const leader: 'aka' | 'ao' | null = akaLead ? 'aka' : aoLead ? 'ao' : null;
 
   useEffect(() => {
@@ -186,6 +214,7 @@ const KumiteScoreBoard: React.FC = () => {
           side={victorySide}
           akaScore={akaState.score}
           aoScore={aoState.score}
+          bySenshu={scoresTied}
           onDone={dismissVictory}
         />
       )}
@@ -209,21 +238,37 @@ const KumiteScoreBoard: React.FC = () => {
           <div className="flex justify-center gap-3">
             {showSettings ? (
               <Card className="p-4 bg-black/20 border border-white/20">
-                <div className="flex items-center gap-4">
-                  <Label className="text-white">Match Time (minutes):</Label>
-                  <Input
-                    type="number"
-                    step="0.5"
-                    value={matchTimeInput}
-                    onChange={(e) => setMatchTimeInput(e.target.value)}
-                    className="w-20"
-                  />
-                  <Button variant="control" onClick={setMatchTime}>
-                    Set Time
-                  </Button>
-                  <Button variant="control" onClick={() => setShowSettings(false)}>
-                    Cancel
-                  </Button>
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center gap-4">
+                    <Label className="w-44 text-white">Match Time (minutes):</Label>
+                    <Input
+                      type="number"
+                      step="0.5"
+                      min="0.5"
+                      value={matchTimeInput}
+                      onChange={(e) => setMatchTimeInput(e.target.value)}
+                      className="w-20"
+                    />
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <Label className="w-44 text-white">Lead points:</Label>
+                    <Input
+                      type="number"
+                      step="1"
+                      min="1"
+                      value={leadPointsInput}
+                      onChange={(e) => setLeadPointsInput(e.target.value)}
+                      className="w-20"
+                    />
+                  </div>
+                  <div className="flex gap-3">
+                    <Button variant="control" onClick={applySettings}>
+                      Apply
+                    </Button>
+                    <Button variant="control" onClick={closeSettings}>
+                      Cancel
+                    </Button>
+                  </div>
                 </div>
               </Card>
             ) : (
