@@ -1,73 +1,53 @@
-# Welcome to your Lovable project
+# Karate Dashboard
 
-## Project info
+Match scoreboard for kumite, used by Advanced Taefudo Martial Arts. Aka (red) and Ao (blue) sit on one screen with a shared clock, scoring, penalties, Senshu, and a victory takeover when a fighter wins.
 
-**URL**: https://lovable.dev/projects/c85c60a0-6d48-42f0-8282-a7e58f180cbf
+## Run it
 
-## How can I edit this code?
-
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/c85c60a0-6d48-42f0-8282-a7e58f180cbf) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+Node.js and npm are required.
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Open [http://localhost:8080](http://localhost:8080).
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```sh
+npm run build
+npm run preview
+```
 
-**Use GitHub Codespaces**
+`npm run build` writes a static site to `dist`. `npm run preview` serves that build locally.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Match controls
 
-## What technologies are used for this project?
+The clock starts at **1:30**. Under the timer:
 
-This project is built with:
+| Control | What it does |
+| --- | --- |
+| Settings | Set match length in minutes (steps of 0.5) and the point lead that ends the bout. Defaults are 1.5 minutes and a 6-point lead. |
+| Reset clock | Returns the clock to the current match length and pauses it. |
+| Play / Pause | Starts or stops the clock. At 00:00 the clock stops on its own. |
+| Reset | Clears both scores, penalties, Senshu, the victory screen, and the clock. |
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Each corner has the same buttons:
 
-## How can I deploy this project?
+| Button | Effect |
+| --- | --- |
+| Yuko | +1 |
+| Wazari | +2 |
+| Ippon | +3 |
+| Cancel | −1 from that corner’s score, and never below 0 |
+| C1, C2, C3, HC, H | Toggle that penalty on or off. Penalties are markers only; they do not change the score. |
+| SENSHU | Give Senshu to that corner. Only one corner can hold it. |
 
-Simply open [Lovable](https://lovable.dev/projects/c85c60a0-6d48-42f0-8282-a7e58f180cbf) and click on Share -> Publish.
+## How a bout is won
 
-## Can I connect a custom domain to my Lovable project?
+- A corner wins as soon as its lead reaches the configured point gap (6 by default). The leading score flickers and shows a trophy.
+- If the clock reaches 00:00 with the scores level and only one corner has Senshu, that corner wins. The takeover reads **SENSHU**.
+- Either win opens a full-screen takeover with the final score. Tap anywhere to return to the board. Scores stay as they were.
 
-Yes, you can!
+## Stack
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Vite, React, TypeScript, Tailwind CSS, and shadcn/ui.
